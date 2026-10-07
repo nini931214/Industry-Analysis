@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>數據分析與統計研究報告</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Font for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#475569',
+                        accent: '#0d9488'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Header Navigation -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('home')">
+                    <div class="bg-blue-600 text-white p-2 rounded-lg">
+                        <i class="fa-solid fa-chart-line text-xl"></i>
+                    </div>
+                    <span class="font-bold text-xl text-slate-900 tracking-tight">產業數據分析報告</span>
+                </div>
+                
+                <nav class="hidden md:flex space-x-1">
+                    <button onclick="switchTab('home')" id="nav-home" class="nav-btn px-4 py-2 rounded-md text-sm font-medium text-blue-600 bg-blue-50">
+                        <i class="fa-solid fa-house mr-1.5"></i>首頁
+                    </button>
+                    <button onclick="switchTab('traffic')" id="nav-traffic" class="nav-btn px-4 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-slate-50">
+                        <i class="fa-solid fa-car-burst mr-1.5"></i>交通事故資料
+                    </button>
+                    <button onclick="switchTab('srda')" id="nav-srda" class="nav-btn px-4 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-slate-50">
+                        <i class="fa-solid fa-users mr-1.5"></i>SRDA 資料分析
+                    </button>
+                    <button onclick="switchTab('aremos')" id="nav-aremos" class="nav-btn px-4 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-slate-50">
+                        <i class="fa-solid fa-database mr-1.5"></i>AREMOS
+                    </button>
+                </nav>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="p-2 rounded-md text-slate-600 hover:text-slate-900 focus:outline-none">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-4 space-y-1">
+            <button onclick="switchTab('home'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">首頁</button>
+            <button onclick="switchTab('traffic'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">交通事故資料</button>
+            <button onclick="switchTab('srda'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">SRDA 資料分析</button>
+            <button onclick="switchTab('aremos'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">AREMOS</button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ================= PAGE: HOME ================= -->
+        <div id="tab-home" class="tab-content active space-y-8">
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-8 sm:p-12 shadow-xl relative overflow-hidden">
+                <div class="relative z-10 max-w-2xl">
+                    <span class="bg-blue-500/20 text-blue-300 text-xs font-semibold px-3 py-1 rounded-full border border-blue-400/30 tracking-wide uppercase">數據分析實作成果</span>
+                    <h1 class="text-3xl sm:text-4xl font-extrabold mt-4 mb-3 tracking-tight">社會與交通數據探索計畫</h1>
+                    <p class="text-slate-300 text-base sm:text-lg mb-6 leading-relaxed">
+                        本專案匯整 112 年度政府 A2 交通事故數據及 SRDA 社會調查資料，透過 R 語言進行敘述統計、交叉分析與假設檢定。
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <button onclick="switchTab('traffic')" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-5 py-2.5 rounded-lg transition-colors shadow-lg shadow-blue-600/30 flex items-center">
+                            瀏覽交通事故分析 <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+                        </button>
+                        <button onclick="switchTab('srda')" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-medium px-5 py-2.5 rounded-lg transition-colors flex items-center">
+                            瀏覽 SRDA 分析 <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Cards -->
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div onclick="switchTab('traffic')" class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-car"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">112 年 A2 交通事故資料</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        涵蓋 906,031 筆觀察值，針對 1 至 12 月的事故總量及每日平均事故數進行月份趨勢分析。
+                    </p>
+                    <span class="text-xs font-semibold text-blue-600 flex items-center">進入分析頁面 <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i></span>
+                </div>
+
+                <!-- Card 2 -->
+                <div onclick="switchTab('srda')" class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group">
+                    <div class="w-12 h-12 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-people-roof"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-teal-600 transition-colors">SRDA 資料分析</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        探討居住狀態（獨居/同住）與家庭聚會頻率之關聯，包含交叉分析與 Monte Carlo 卡方檢定。
+                    </p>
+                    <span class="text-xs font-semibold text-teal-600 flex items-center">進入分析頁面 <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i></span>
+                </div>
+
+                <!-- Card 3 -->
+                <div onclick="switchTab('aremos')" class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-folder-plus"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-amber-600 transition-colors">AREMOS 資料庫</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        預留專區，未來可用於載入 AREMOS 經濟統計資料庫之總體經濟指標與時間序列分析。
+                    </p>
+                    <span class="text-xs font-semibold text-amber-600 flex items-center">進入預留頁面 <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i></span>
+                </div>
+            </div>
+
+            <!-- R Code Link Section -->
+            <div class="bg-slate-900 text-white rounded-xl p-6 shadow-md border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-indigo-500/20 text-indigo-400 rounded-lg flex items-center justify-center text-2xl">
+                        <i class="fa-brands fa-r-project"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg">分析源碼與 R Script 檔案</h4>
+                        <p class="text-slate-400 text-sm">完整資料整理、繪圖與卡方檢定之 RStudio 程式腳本已就緒。</p>
+                    </div>
+                </div>
+                <a href="產業分析實作_完整R程式.R" download class="inline-flex items-center px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors whitespace-nowrap shadow-md shadow-indigo-600/30">
+                    <i class="fa-solid fa-download mr-2"></i>下載完整 R 腳本 (.R)
+                </a>
+            </div>
+        </div>
+
+        <!-- ================= PAGE: TRAFFIC ================= -->
+        <div id="tab-traffic" class="tab-content space-y-8">
+            <div class="border-b border-slate-200 pb-4">
+                <h2 class="text-2xl font-bold text-slate-900">一、112 年 A2 交通事故資料</h2>
+                <p class="text-slate-500 text-sm mt-1">分析合併 12 個月之 CSV 資料（共 906,031 筆觀察值）</p>
+            </div>
+
+            <!-- Summary Box -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                <h3 class="text-lg font-bold text-slate-900 border-l-4 border-blue-600 pl-3">資料敘述統計</h3>
+                <p class="text-slate-700 leading-relaxed">
+                    本研究使用 112 年度 A2 交通事故資料，將 1 月至 12 月共 12 個月份的 CSV 資料合併後進行分析。合併後資料共有 <strong class="text-blue-700">906,031 筆觀察值</strong>，並建立月份變數 <code class="bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded text-sm">month</code>，用以比較各月份交通事故紀錄數的差異。
+                </p>
+                <div class="grid sm:grid-cols-3 gap-4 my-4 bg-slate-50 p-4 rounded-lg text-center">
+                    <div>
+                        <span class="block text-xs text-slate-500">每月平均筆數</span>
+                        <span class="text-xl font-bold text-slate-800">75,502.58 筆</span>
+                    </div>
+                    <div>
+                        <span class="block text-xs text-slate-500">中位數</span>
+                        <span class="text-xl font-bold text-slate-800">75,473.5 筆</span>
+                    </div>
+                    <div>
+                        <span class="block text-xs text-slate-500">標準差</span>
+                        <span class="text-xl font-bold text-slate-800">3,726.43 筆</span>
+                    </div>
+                </div>
+                <p class="text-slate-700 leading-relaxed">
+                    各月份事故紀錄數分別為：1月 79,824 筆、2月 70,525 筆、3月 81,557 筆、4月 70,868 筆、5月 76,352 筆、6月 75,242 筆、7月 75,705 筆、8月 73,719 筆、9月 70,863 筆、10月 73,742 筆、11月 78,290 筆、12月 79,344 筆。其中，<strong>3 月的事故紀錄數最高（81,557 筆）</strong>；<strong>2 月最低（70,525 筆）</strong>。
+                </p>
+                <p class="text-slate-700 leading-relaxed">
+                    由於各月份天數不同，因此進一步以各月事故紀錄數除以當月天數，計算每日平均事故紀錄數。結果顯示，3 月每日平均最高，約 2,630.87 筆；11 月次高，約 2,609.67 筆；9 月最低，約 2,362.10 筆，4 月則約為 2,362.27 筆。因此，即使控制不同月份的天數差異後，各月份之間仍存在一定程度的事故紀錄量差異。
+                </p>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Figure 1 -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200">
+                        <h4 class="font-bold text-slate-900">圖 1｜2023 年 A2 交通事故各月紀錄數</h4>
+                    </div>
+                    <div class="p-4 flex-grow flex flex-col justify-between">
+                        <!-- Responsive SVG Chart Representation for Fig 1 -->
+                        <div class="w-full h-64 bg-slate-50 rounded-lg p-2 mb-4 flex items-end justify-between space-x-1 border border-slate-100">
+                            <!-- SVG Bar graph implementation to replace missing images reliably -->
+                            <svg class="w-full h-full" viewBox="0 0 500 220">
+                                <line x1="40" y1="180" x2="480" y2="180" stroke="#cbd5e1" stroke-width="1"/>
+                                <text x="10" y="185" font-size="10" fill="#64748b">0</text>
+                                <text x="10" y="100" font-size="10" fill="#64748b">40k</text>
+                                <text x="10" y="20" font-size="10" fill="#64748b">80k</text>
+                                
+                                <!-- Bars -->
+                                <rect x="45" y="21" width="28" height="159" fill="#475569" rx="2"/>
+                                <rect x="80" y="39" width="28" height="141" fill="#475569" rx="2"/>
+                                <rect x="115" y="17" width="28" height="163" fill="#2563eb" rx="2"/> <!-- Highest -->
+                                <rect x="150" y="39" width="28" height="141" fill="#475569" rx="2"/>
+                                <rect x="185" y="28" width="28" height="152" fill="#475569" rx="2"/>
+                                <rect x="220" y="30" width="28" height="150" fill="#475569" rx="2"/>
+                                <rect x="255" y="29" width="28" height="151" fill="#475569" rx="2"/>
+                                <rect x="290" y="33" width="28" height="147" fill="#475569" rx="2"/>
+                                <rect x="325" y="39" width="28" height="141" fill="#475569" rx="2"/>
+                                <rect x="360" y="33" width="28" height="147" fill="#475569" rx="2"/>
+                                <rect x="395" y="24" width="28" height="156" fill="#475569" rx="2"/>
+                                <rect x="430" y="22" width="28" height="158" fill="#475569" rx="2"/>
+                                
+                                <!-- Labels -->
+                                <text x="59" y="195" font-size="10" fill="#64748b" text-anchor="middle">1</text>
+                                <text x="94" y="195" font-size="10" fill="#64748b" text-anchor="middle">2</text>
+                                <text x="129" y="195" font-size="10" fill="#64748b" text-anchor="middle">3</text>
+                                <text x="164" y="195" font-size="10" fill="#64748b" text-anchor="middle">4</text>
+                                <text x="199" y="195" font-size="10" fill="#64748b" text-anchor="middle">5</text>
+                                <text x="234" y="195" font-size="10" fill="#64748b" text-anchor="middle">6</text>
+                                <text x="269" y="195" font-size="10" fill="#64748b" text-anchor="middle">7</text>
+                                <text x="304" y="195" font-size="10" fill="#64748b" text-anchor="middle">8</text>
+                                <text x="339" y="195" font-size="10" fill="#64748b" text-anchor="middle">9</text>
+                                <text x="374" y="195" font-size="10" fill="#64748b" text-anchor="middle">10</text>
+                                <text x="409" y="195" font-size="10" fill="#64748b" text-anchor="middle">11</text>
+                                <text x="444" y="195" font-size="10" fill="#64748b" text-anchor="middle">12</text>
+                                <text x="250" y="212" font-size="11" fill="#475569" text-anchor="middle" font-weight="bold">月份 (Month)</text>
+                            </svg>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            此圖呈現 1 至 12 月事故筆數。各月大致落在 7 萬至 8 萬筆之間。其中以 <strong>3 月 (81,557筆) 最高</strong>，其次為 1 月 (79,824筆) 及 12 月 (79,344筆)；<strong>2 月 (70,525筆) 最低</strong>。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Figure 2 -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200">
+                        <h4 class="font-bold text-slate-900">圖 2｜2023 年各月每日平均 A2 交通事故紀錄數</h4>
+                    </div>
+                    <div class="p-4 flex-grow flex flex-col justify-between">
+                        <!-- Responsive SVG Chart Representation for Fig 2 -->
+                        <div class="w-full h-64 bg-slate-50 rounded-lg p-2 mb-4 flex items-end justify-between space-x-1 border border-slate-100">
+                            <svg class="w-full h-full" viewBox="0 0 500 220">
+                                <line x1="40" y1="180" x2="480" y2="180" stroke="#cbd5e1" stroke-width="1"/>
+                                <text x="10" y="185" font-size="10" fill="#64748b">0</text>
+                                <text x="5" y="100" font-size="10" fill="#64748b">1500</text>
+                                <text x="5" y="20" font-size="10" fill="#64748b">3000</text>
+                                
+                                <!-- Bars -->
+                                <rect x="45" y="43" width="28" height="137" fill="#475569" rx="2"/>
+                                <rect x="80" y="46" width="28" height="134" fill="#0d9488" rx="2"/> <!-- Feb high avg -->
+                                <rect x="115" y="39" width="28" height="141" fill="#2563eb" rx="2"/> <!-- Highest -->
+                                <rect x="150" y="55" width="28" height="125" fill="#475569" rx="2"/>
+                                <rect x="185" y="52" width="28" height="128" fill="#475569" rx="2"/>
+                                <rect x="220" y="52" width="28" height="128" fill="#475569" rx="2"/>
+                                <rect x="255" y="51" width="28" height="129" fill="#475569" rx="2"/>
+                                <rect x="290" y="58" width="28" height="122" fill="#475569" rx="2"/>
+                                <rect x="325" y="55" width="28" height="125" fill="#e11d48" rx="2"/> <!-- Lowest -->
+                                <rect x="360" y="52" width="28" height="128" fill="#475569" rx="2"/>
+                                <rect x="395" y="40" width="28" height="140" fill="#475569" rx="2"/>
+                                <rect x="430" y="44" width="28" height="136" fill="#475569" rx="2"/>
+                                
+                                <!-- Labels -->
+                                <text x="59" y="195" font-size="10" fill="#64748b" text-anchor="middle">1</text>
+                                <text x="94" y="195" font-size="10" fill="#64748b" text-anchor="middle">2</text>
+                                <text x="129" y="195" font-size="10" fill="#64748b" text-anchor="middle">3</text>
+                                <text x="164" y="195" font-size="10" fill="#64748b" text-anchor="middle">4</text>
+                                <text x="199" y="195" font-size="10" fill="#64748b" text-anchor="middle">5</text>
+                                <text x="234" y="195" font-size="10" fill="#64748b" text-anchor="middle">6</text>
+                                <text x="269" y="195" font-size="10" fill="#64748b" text-anchor="middle">7</text>
+                                <text x="304" y="195" font-size="10" fill="#64748b" text-anchor="middle">8</text>
+                                <text x="339" y="195" font-size="10" fill="#64748b" text-anchor="middle">9</text>
+                                <text x="374" y="195" font-size="10" fill="#64748b" text-anchor="middle">10</text>
+                                <text x="409" y="195" font-size="10" fill="#64748b" text-anchor="middle">11</text>
+                                <text x="444" y="195" font-size="10" fill="#64748b" text-anchor="middle">12</text>
+                                <text x="250" y="212" font-size="11" fill="#475569" text-anchor="middle" font-weight="bold">月份 (Month)</text>
+                            </svg>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            排除天數影響後，<strong>3 月每日平均最高（約 2,630.87 筆）</strong>，11 月次高（約 2,609.67 筆），<strong>9 月最低（約 2,362.10 筆）</strong>。2 月雖然總數最低，但每日平均約為 2,518.75 筆，並非全年最低。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PAGE: SRDA ================= -->
+        <div id="tab-srda" class="tab-content space-y-8">
+            <div class="border-b border-slate-200 pb-4">
+                <h2 class="text-2xl font-bold text-slate-900">二、SRDA 資料分析</h2>
+                <p class="text-slate-500 text-sm mt-1">居住狀態與家庭聚會頻率之交叉分析與卡方檢定</p>
+            </div>
+
+            <!-- Variables & Descriptive Table Section -->
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Variables -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-3 md:col-span-1">
+                    <h3 class="text-lg font-bold text-slate-900 border-l-4 border-teal-600 pl-3">研究變數說明</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        探討居住狀態與家庭聚會頻率之間是否具有統計關聯。
+                    </p>
+                    <ul class="space-y-2 text-sm text-slate-700">
+                        <li class="bg-slate-50 p-2.5 rounded border border-slate-100">
+                            <strong class="text-slate-900">居住狀態 (<code class="text-xs bg-slate-200 px-1 rounded">g06a</code>)</strong>:
+                            <br><span class="text-slate-500">分為「獨居」與「同住」</span>
+                        </li>
+                        <li class="bg-slate-50 p-2.5 rounded border border-slate-100">
+                            <strong class="text-slate-900">家庭聚會頻率 (<code class="text-xs bg-slate-200 px-1 rounded">j01d</code>)</strong>:
+                            <br><span class="text-slate-500">分為「從未」、「偶爾」及「經常」</span>
+                        </li>
+                    </ul>
+                    <div class="p-3 bg-teal-50 text-teal-800 rounded-lg text-xs font-medium">
+                        <i class="fa-solid fa-circle-info mr-1"></i> 排除遺漏值後，有效樣本數 N = 132 人。
+                    </div>
+                </div>
+
+                <!-- Cross Tabulation -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 md:col-span-2 space-y-4">
+                    <h3 class="text-lg font-bold text-slate-900 border-l-4 border-teal-600 pl-3">交叉分析摘要表 (Cross-tabulation)</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-slate-700 border-collapse">
+                            <thead class="text-xs text-slate-700 uppercase bg-slate-100">
+                                <tr>
+                                    <th class="py-3 px-4 border border-slate-200">居住狀態</th>
+                                    <th class="py-3 px-4 border border-slate-200 text-center">從未</th>
+                                    <th class="py-3 px-4 border border-slate-200 text-center">偶爾</th>
+                                    <th class="py-3 px-4 border border-slate-200 text-center">經常</th>
+                                    <th class="py-3 px-4 border border-slate-200 text-center font-bold bg-slate-200/60">合計</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="py-2.5 px-4 border border-slate-200 font-semibold">獨居 (n=14)</td>
+                                    <td class="py-2.5 px-4 border border-slate-200 text-center">0 <span class="text-xs text-slate-400">(0%)</span></td>
+                                    <td class="py-2.5 px-4 border border-slate-200 text-center">6 <span class="text-xs text-slate-400">(42.86%)</span></td>
+                                    <td class="py-2.5 px-4 border border-slate-200 text-center">8 <span class="text-xs text-slate-400">(57.14%)</span></td>
+                                    <td class="py-2.5 px-4 border border-slate-200 text-center font-bold bg-slate-50">14 <span class="text-xs text-slate-400">(100%)</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="py-2.5 px-4 border border-slate-200 font-semibold">同住 (n=118)</td>
+                                    <td class="py-2.5 px-4 border border-slate-200 text-center">11 <span class="text-xs text-slate-400">(9.32%)</span></td>
+                                    <td class="py-2.5 px-4 border border-slate-200 text-center">43 <span class="text-xs text-slate-400">(36.44%)</span></td>
+                                    <td class="py-2.5 px-4 border border-slate-200 text-center">64 <span class="text-xs text-slate-400">(54.24%)</span></td>
+                                    <td class="py-2.5 px-4 border border-slate-200 text-center font-bold bg-slate-50">118 <span class="text-xs text-slate-400">(100%)</span></td>
+                                </tr>
+                                <tr class="bg-slate-100 font-bold">
+                                    <td class="py-2.5 px-4 border border-slate-200">合計</td>
+                                    <td class="py-2.5 px-4 border border-slate-200 text-center">11 <span class="text-xs text-slate-500">(8.33%)</span></td>
+                                    <td class="py-2.5 px-4 border border-slate-200 text-center">49 <span class="text-xs text-slate-500">(37.12%)</span></td>
+                                    <td class="py-2.5 px-4 border border-slate-200 text-center">72 <span class="text-xs text-slate-500">(54.55%)</span></td>
+                                    <td class="py-2.5 px-4 border border-slate-200 text-center bg-slate-200">132 <span class="text-xs text-slate-500">(100%)</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        換算百分比後，獨居與同住兩組均以「經常參加家庭聚會」佔比最高（分別為 57.14% 及 54.24%），結構非常接近。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 4 Charts Grid -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Fig 1 -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-3">
+                    <h4 class="font-bold text-slate-900 border-b pb-2">圖 1｜居住狀態與家庭聚會頻率分組長條圖</h4>
+                    <div class="h-48 bg-slate-50 rounded-lg p-2 flex items-center justify-center border border-slate-100">
+                        <svg class="w-full h-full" viewBox="0 0 300 150">
+                            <!-- Grouped Bar Chart Visual -->
+                            <rect x="60" y="110" width="18" height="0" fill="#ef4444"/>
+                            <rect x="80" y="80" width="18" height="30" fill="#f59e0b"/>
+                            <rect x="100" y="70" width="18" height="40" fill="#10b981"/>
+                            <text x="89" y="130" font-size="10" text-anchor="middle" fill="#64748b">獨居</text>
+
+                            <rect x="180" y="95" width="18" height="15" fill="#ef4444"/>
+                            <rect x="200" y="45" width="18" height="65" fill="#f59e0b"/>
+                            <rect x="220" y="15" width="18" height="95" fill="#10b981"/>
+                            <text x="209" y="130" font-size="10" text-anchor="middle" fill="#64748b">同住</text>
+
+                            <line x1="40" y1="110" x2="260" y2="110" stroke="#cbd5e1"/>
+                        </svg>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        呈現人數分佈。同住者總人數明顯高於獨居者，兩組皆以「經常」參加聚會的人數最多。
+                    </p>
+                </div>
+
+                <!-- Fig 2 -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-3">
+                    <h4 class="font-bold text-slate-900 border-b pb-2">圖 2｜家庭聚會頻率圓餅圖</h4>
+                    <div class="h-48 bg-slate-50 rounded-lg p-2 flex items-center justify-center border border-slate-100">
+                        <svg class="w-32 h-32" viewBox="0 0 32 32">
+                            <!-- Pie chart: 54.5% green, 37.1% orange, 8.3% red -->
+                            <circle r="16" cx="16" cy="16" fill="#10b981" />
+                            <path d="M16 16 L16 0 A16 16 0 0 1 31.6 12.3 Z" fill="#f59e0b" />
+                            <path d="M16 16 L31.6 12.3 A16 16 0 0 1 31.9 18.5 Z" fill="#ef4444" />
+                        </svg>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        呈現全體 132 名樣本分布：「經常」54.5% (72人)、「偶爾」37.1% (49人)、「從未」8.3% (11人)。
+                    </p>
+                </div>
+
+                <!-- Fig 3 -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-3">
+                    <h4 class="font-bold text-slate-900 border-b pb-2">圖 3｜居住狀態與家庭聚會頻率折線圖</h4>
+                    <div class="h-48 bg-slate-50 rounded-lg p-2 flex items-center justify-center border border-slate-100">
+                        <svg class="w-full h-full" viewBox="0 0 300 150">
+                            <!-- Line chart -->
+                            <polyline points="60,120 150,57 240,30" fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="4"/>
+                            <polyline points="60,105 150,65 240,35" fill="none" stroke="#0d9488" stroke-width="2"/>
+                            <text x="60" y="135" font-size="9" text-anchor="middle">從未</text>
+                            <text x="150" y="135" font-size="9" text-anchor="middle">偶爾</text>
+                            <text x="240" y="135" font-size="9" text-anchor="middle">經常</text>
+                        </svg>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        獨居與同住兩組換算百分比後的變化趨勢非常相近，皆呈現上升趨勢，以「經常」為最高。
+                    </p>
+                </div>
+
+                <!-- Fig 4 -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 space-y-3">
+                    <h4 class="font-bold text-slate-900 border-b pb-2">圖 4｜居住狀態與家庭聚會頻率比例圖</h4>
+                    <div class="h-48 bg-slate-50 rounded-lg p-2 flex items-center justify-center border border-slate-100">
+                        <svg class="w-full h-full" viewBox="0 0 300 150">
+                            <!-- 100% Stacked Bar Chart -->
+                            <rect x="80" y="20" width="35" height="57" fill="#10b981"/>
+                            <rect x="80" y="77" width="35" height="43" fill="#f59e0b"/>
+                            
+                            <rect x="185" y="20" width="35" height="54" fill="#10b981"/>
+                            <rect x="185" y="74" width="35" height="36" fill="#f59e0b"/>
+                            <rect x="185" y="110" width="35" height="10" fill="#ef4444"/>
+                            
+                            <text x="97" y="138" font-size="10" text-anchor="middle">獨居</text>
+                            <text x="202" y="138" font-size="10" text-anchor="middle">同住</text>
+                        </svg>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        消除總樣本數差異後，可清楚觀察到獨居與同住者在聚會參與結構上極為相似。
+                    </p>
+                </div>
+            </div>
+
+            <!-- Statistical Test & Conclusion Card -->
+            <div class="bg-slate-900 text-white p-6 rounded-xl shadow-md space-y-4">
+                <h3 class="text-xl font-bold text-teal-400 flex items-center">
+                    <i class="fa-solid fa-square-poll-vertical mr-2"></i>三、SRDA 卡方檢定結果與結論
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6 pt-2">
+                    <div class="bg-slate-800/80 p-4 rounded-lg border border-slate-700 space-y-2">
+                        <h4 class="text-sm font-semibold text-slate-300">Pearson 卡方獨立性檢定</h4>
+                        <div class="text-lg font-mono text-teal-300">
+                            &chi;&sup2; = 1.4633, df = 2, p = 0.4811
+                        </div>
+                        <p class="text-xs text-slate-400">
+                            由於 p 值 > 0.05，在 5% 顯著水準下，不拒絕「居住狀態與家庭聚會頻率相互獨立」之虛無假設。
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-800/80 p-4 rounded-lg border border-slate-700 space-y-2">
+                        <h4 class="text-sm font-semibold text-slate-300">Monte Carlo 模擬檢定 (10,000次)</h4>
+                        <div class="text-lg font-mono text-teal-300">
+                            p-value = 0.5463
+                        </div>
+                        <p class="text-xs text-slate-400">
+                            鑑於「獨居 &times; 從未」之期望次數為 1.17 (&lt; 5)，經 Monte Carlo 模擬修正後，p 值仍大於 0.05。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-teal-950/60 border border-teal-800/50 p-4 rounded-lg mt-4">
+                    <h4 class="text-sm font-bold text-teal-300 mb-1">最終分析結論</h4>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        本研究以卡方獨立性檢定探討居住狀態與家庭聚會頻率之間的關聯。敘述統計結果顯示，無論獨居或同住，皆以經常參加家庭聚會者所占比例最高。獨居者中有 57.14% 經常參加家庭聚會，同住者則為 54.24%，兩組分布差異有限。Pearson 卡方檢定結果為 &chi;&sup2; = 1.4633，p = 0.4811。由於部分儲格的理論期望次數低於 5，因此進一步採用 10,000 次 Monte Carlo 模擬，所得 p 值為 0.5463。結果仍未達 0.05 顯著水準，因此目前沒有足夠統計證據認為居住狀態與家庭聚會頻率之間存在顯著關聯。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PAGE: AREMOS ================= -->
+        <div id="tab-aremos" class="tab-content space-y-8">
+            <div class="border-b border-slate-200 pb-4">
+                <h2 class="text-2xl font-bold text-slate-900">三、AREMOS 經濟統計資料庫 (預留欄位)</h2>
+                <p class="text-slate-500 text-sm mt-1">預留此模組供未來載入與擴充台灣總體經濟時間序列資料</p>
+            </div>
+
+            <div class="bg-white p-12 rounded-xl shadow-sm border border-dashed border-slate-300 text-center space-y-4">
+                <div class="w-16 h-16 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto text-2xl">
+                    <i class="fa-solid fa-database"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800">AREMOS 資料庫模組預留區</h3>
+                <p class="text-slate-500 max-w-md mx-auto text-sm leading-relaxed">
+                    此分頁已為您建置完成。未來包含國民所得、物價指數、進出口貿易等 AREMOS 資料數據分析報告，皆可直接嵌入此區塊。
+                </p>
+                <div class="inline-flex items-center text-xs text-slate-400 bg-slate-100 px-3 py-1.5 rounded-full">
+                    <i class="fa-solid fa-clock mr-1.5"></i> 狀態：等待擴充資料中...
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-auto py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <div>
+                &copy; 數據分析與統計研究報告 All rights reserved.
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="產業分析實作_完整R程式.R" download class="hover:text-blue-600 transition-colors flex items-center font-medium">
+                    <i class="fa-brands fa-r-project text-base mr-1"></i> 下載 R 原始碼
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Tab Switching & Interactivity -->
+    <script>
+        function switchTab(tabId) {
+            // Hide all tab content
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            // Show selected tab content
+            const targetContent = document.getElementById('tab-' + tabId);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+
+            // Update navigation button styles
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                btn.classList.remove('text-blue-600', 'bg-blue-50');
+                btn.classList.add('text-slate-600');
+            });
+
+            const activeNav = document.getElementById('nav-' + tabId);
+            if (activeNav) {
+                activeNav.classList.add('text-blue-600', 'bg-blue-50');
+                activeNav.classList.remove('text-slate-600');
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
