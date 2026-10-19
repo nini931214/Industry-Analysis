@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>產業分析與統計實作成果儀表板</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#1e40af',
+                        dark: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- 頂部導覽列 -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('home')">
+                    <div class="bg-blue-600 text-white p-2 rounded-lg shadow">
+                        <i class="fa-solid fa-chart-line text-lg"></i>
+                    </div>
+                    <span class="font-bold text-xl text-slate-900 tracking-tight">產業分析與統計實作</span>
+                </div>
+                <nav class="hidden md:flex space-x-1 lg:space-x-4">
+                    <button onclick="switchTab('home')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-100 transition" data-target="home">首頁</button>
+                    <button onclick="switchTab('traffic')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-100 transition" data-target="traffic">政府交通事故資料</button>
+                    <button onclick="switchTab('srda')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-100 transition" data-target="srda">SRDA 資料分析</button>
+                    <button onclick="switchTab('income')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-100 transition" data-target="income">SRDA 113 家庭收支</button>
+                </nav>
+                <!-- 手機版選單按鈕 -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-600 hover:text-slate-900 focus:outline-none p-2">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- 手機版下拉選單 -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 px-4 pt-2 pb-4 space-y-1">
+            <button onclick="switchTab('home'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">首頁</button>
+            <button onclick="switchTab('traffic'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">政府交通事故資料</button>
+            <button onclick="switchTab('srda'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">SRDA 資料分析</button>
+            <button onclick="switchTab('income'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">SRDA 113 家庭收支</button>
+        </div>
+    </header>
+
+    <!-- 主要內容區 -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- 1. 首頁 (Home) -->
+        <section id="home" class="tab-content active space-y-8 animate-fade">
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl shadow-xl text-white p-8 sm:p-12">
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">歡迎來到產業分析與統計實作成果儀表板</h1>
+                <p class="text-blue-100 text-lg max-w-2xl mb-8 leading-relaxed">
+                    本網站整合了 112 年政府 A2 交通事故大數據分析、SRDA 居住狀態與家庭聚會關聯性研究，以及 SRDA 113 家庭收支調查的完整 Colab 統計分析與視覺化圖表。
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="switchTab('traffic')" class="bg-white text-blue-600 font-semibold px-6 py-3 rounded-lg shadow hover:bg-blue-50 transition flex items-center space-x-2">
+                        <span>查看交通事故資料</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <button onclick="switchTab('income')" class="bg-purple-500 bg-opacity-30 border border-purple-300 text-white font-semibold px-6 py-3 rounded-lg hover:bg-opacity-40 transition flex items-center space-x-2">
+                        <span>查看 SRDA 113 家庭收支</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 模組快捷導覽卡片 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- 卡片 1 -->
+                <div onclick="switchTab('traffic')" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md hover:border-blue-300 transition cursor-pointer group">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-xl mb-4 group-hover:bg-blue-600 group-hover:text-white transition">
+                        <i class="fa-solid fa-car-burst"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-slate-900 mb-2">112 年 A2 交通事故資料</h2>
+                    <p class="text-slate-600 text-sm mb-4">合併 1 至 12 月共 90.6 萬筆資料，進行每月總量與每日平均紀錄數的敘述統計分析。</p>
+                    <span class="text-blue-600 text-sm font-semibold flex items-center space-x-1">
+                        <span>進入專區</span> <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </span>
+                </div>
+                <!-- 卡片 2 -->
+                <div onclick="switchTab('srda')" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md hover:border-blue-300 transition cursor-pointer group">
+                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-xl mb-4 group-hover:bg-emerald-600 group-hover:text-white transition">
+                        <i class="fa-solid fa-people-roof"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-slate-900 mb-2">SRDA 資料分析</h2>
+                    <p class="text-slate-600 text-sm mb-4">探討居住狀態與家庭聚會頻率之關聯，包含交叉分析、多維圖表與卡方獨立性檢定結果。</p>
+                    <span class="text-emerald-600 text-sm font-semibold flex items-center space-x-1">
+                        <span>進入專區</span> <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </span>
+                </div>
+                <!-- 卡片 3 -->
+                <div onclick="switchTab('income')" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md hover:border-purple-300 transition cursor-pointer group">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-xl mb-4 group-hover:bg-purple-600 group-hover:text-white transition">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-slate-900 mb-2">SRDA 113 家庭收支</h2>
+                    <p class="text-slate-600 text-sm mb-4">展示 Google Colab 雲端實作之家庭收支結構、消安支出、教育與各縣市年齡分佈分析。</p>
+                    <span class="text-purple-600 text-sm font-semibold flex items-center space-x-1">
+                        <span>進入專區</span> <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </span>
+                </div>
+            </div>
+
+            <!-- 底部程式碼下載區塊 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900">專案原始程式碼與雲端筆記本</h3>
+                    <p class="text-sm text-slate-600">提供完整的 R 語言實作腳本與 Google Colab 雲端線上程式碼，供您隨時下載與檢視。</p>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <a href="產業分析實作_完整R程式.R" download class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2">
+                        <i class="fa-solid fa-download"></i>
+                        <span>下載 .R 程式碼</span>
+                    </a>
+                    <a href="https://colab.research.google.com/drive/1w_S9M_UAq9CRVuA6myQUe8rkm61CDSPK?hl=zh-tw#scrollTo=943fd342" target="_blank" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2">
+                        <i class="fa-solid fa-code"></i>
+                        <span>開啟 Google Colab</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 政府交通事故資料 (Traffic Accident) -->
+        <section id="traffic" class="tab-content space-y-8">
+            <div class="border-b border-slate-200 pb-4 flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">一、112 年 A2 交通事故資料分析</h2>
+                    <p class="text-sm text-slate-600 mt-1">分析 1 月至 12 月交通事故紀錄之總量波動與每日平均表現。</p>
+                </div>
+                <button onclick="switchTab('home')" class="text-sm text-blue-600 hover:underline"><i class="fa-solid fa-arrow-left"></i> 回首頁</button>
+            </div>
+
+            <!-- 文字敘述區 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4 text-slate-700 leading-relaxed">
+                <h3 class="text-lg font-bold text-slate-900">資料敘述統計</h3>
+                <p>本研究使用 112 年度 A2 交通事故資料，將 1 月至 12 月共 12 個月份的 CSV 資料合併後進行分析。合併後資料共有 <strong>906,031 筆</strong>觀察值，並建立月份變數 <code>month</code>，用以比較各月份交通事故紀錄數的差異。</p>
+                <p>各月份事故紀錄數分別為：1 月 79,824 筆、2 月 70,525 筆、3 月 81,557 筆、4 月 70,868 筆、5 月 76,352 筆、6 月 75,242 筆、7 月 75,705 筆、8 月 73,719 筆、9 月 70,863 筆、10 月 73,742 筆、11 月 78,290 筆、12 月 79,344 筆。每月平均約為 <strong>75,502.58 筆</strong>，中位數為 <strong>75,473.5 筆</strong>，標準差約為 <strong>3,726.43 筆</strong>。其中，3 月的事故紀錄數最高，共 81,557 筆；2 月最低，共 70,525 筆。</p>
+                <p>由於各月份天數不同，因此進一步以各月事故紀錄數除以當月天數，計算每日平均事故紀錄數。結果顯示，3 月每日平均最高，約 2,630.87 筆；11 月次高，約 2,609.67 筆；9 月最低，約 2,362.10 筆，4 月則約為 2,362.27 筆。因此，即使控制不同月份的天數差異後，各月份之間仍存在一定程度的事故紀錄量差異。</p>
+            </div>
+
+            <!-- 圖表展示區 (使用 object/embed 嵌入 PDF 圖檔) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- 圖 1 -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+                    <h3 class="font-bold text-slate-900 flex items-center space-x-2">
+                        <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
+                        <span>圖 1｜2023 年 A2 交通事故各月紀錄數</span>
+                    </h3>
+                    <div class="bg-slate-100 rounded-lg p-2 flex items-center justify-center border border-slate-200 h-80 overflow-hidden">
+                        <object data="Rplot3.pdf" type="application/pdf" class="w-full h-full">
+                            <object data="Rplot.pdf" type="application/pdf" class="w-full h-full">
+                                <p class="text-xs text-slate-500">您的瀏覽器無法顯示 PDF，<a href="Rplot3.pdf" class="text-blue-600 underline">點此下載圖表</a></p>
+                            </object>
+                        </object>
+                    </div>
+                    <p class="text-sm text-slate-600">此圖以長條圖呈現 1 月至 12 月的 A2 交通事故紀錄數。由圖中可以發現，各月份的事故紀錄數大致落在 7 萬至 8 萬筆之間，其中以 3 月 81,557 筆最高。</p>
+                </div>
+
+                <!-- 圖 2 -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+                    <h3 class="font-bold text-slate-900 flex items-center space-x-2">
+                        <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
+                        <span>圖 2｜2023 年各月每日平均 A2 交通事故紀錄數</span>
+                    </h3>
+                    <div class="bg-slate-100 rounded-lg p-2 flex items-center justify-center border border-slate-200 h-80 overflow-hidden">
+                        <object data="Rplot4.pdf" type="application/pdf" class="w-full h-full">
+                            <object data="Rplot2.pdf" type="application/pdf" class="w-full h-full">
+                                <p class="text-xs text-slate-500">您的瀏覽器無法顯示 PDF，<a href="Rplot4.pdf" class="text-blue-600 underline">點此下載圖表</a></p>
+                            </object>
+                        </object>
+                    </div>
+                    <p class="text-sm text-slate-600">為排除不同月份天數所造成的影響，本圖將各月事故紀錄數除以當月天數。<strong>3 月每日平均最高（約 2,630.87 筆），11 月次高（約 2,609.67 筆），9 月最低。</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SRDA 資料分析 (SRDA Data Analysis) -->
+        <section id="srda" class="tab-content space-y-8">
+            <div class="border-b border-slate-200 pb-4 flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">二、SRDA 資料分析：居住狀態與家庭聚會頻率</h2>
+                    <p class="text-sm text-slate-600 mt-1">探討獨居與同住者在家庭聚會參與頻率上的差異與獨立性檢定。</p>
+                </div>
+                <button onclick="switchTab('home')" class="text-sm text-blue-600 hover:underline"><i class="fa-solid fa-arrow-left"></i> 回首頁</button>
+            </div>
+
+            <!-- 研究變數與交叉表 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6 text-slate-700 leading-relaxed">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">研究變數與敘述統計</h3>
+                    <p>本分析主要探討居住狀態與家庭聚會頻率之間是否具有關聯。居住狀態取自 <code>g06a</code>，依同住人數區分為「獨居」與「同住」；家庭聚會頻率取自 <code>j01d</code>，分為「從未」、「偶爾」及「經常」三類。排除遺漏值後，共有 <strong>132 個有效樣本</strong>。</p>
+                </div>
+
+                <!-- 交叉表排版 -->
+                <div class="overflow-x-auto">
+                    <h4 class="font-semibold text-slate-900 mb-2">實際交叉表</h4>
+                    <table class="min-w-full divide-y divide-slate-200 border border-slate-200 rounded-lg text-sm text-center">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-4 py-3 font-semibold text-slate-700 border-r">居住狀態</th>
+                                <th class="px-4 py-3 font-semibold text-slate-700">從未</th>
+                                <th class="px-4 py-3 font-semibold text-slate-700">偶爾</th>
+                                <th class="px-4 py-3 font-semibold text-slate-700">經常</th>
+                                <th class="px-4 py-3 font-semibold text-slate-700 bg-slate-100">合計</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr>
+                                <td class="px-4 py-3 font-medium text-slate-900 bg-slate-50 border-r">獨居</td>
+                                <td class="px-4 py-3">0</td>
+                                <td class="px-4 py-3">6</td>
+                                <td class="px-4 py-3">8</td>
+                                <td class="px-4 py-3 font-semibold bg-slate-50">14</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-medium text-slate-900 bg-slate-50 border-r">同住</td>
+                                <td class="px-4 py-3">11</td>
+                                <td class="px-4 py-3">43</td>
+                                <td class="px-4 py-3">64</td>
+                                <td class="px-4 py-3 font-semibold bg-slate-50">118</td>
+                            </tr>
+                            <tr class="bg-slate-50 font-semibold">
+                                <td class="px-4 py-3 border-r">合計</td>
+                                <td class="px-4 py-3">11</td>
+                                <td class="px-4 py-3">49</td>
+                                <td class="px-4 py-3">72</td>
+                                <td class="px-4 py-3">132</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>換算比例後，獨居者中約 <strong>57.14% 經常參加、42.86% 偶爾參加、0% 從未參加</strong>；同住者約有 <strong>54.24% 經常參加、36.44% 偶爾參加、9.32% 從未參加</strong>。</p>
+            </div>
+
+            <!-- SRDA 4張 PDF 圖表嵌入區 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- 圖 1 -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+                    <h3 class="font-bold text-slate-900">圖 1｜居住狀態與家庭聚會頻率分組長條圖</h3>
+                    <div class="bg-slate-100 rounded-lg p-2 flex items-center justify-center border h-72 overflow-hidden">
+                        <object data="SRDA.pdf" type="application/pdf" class="w-full h-full">
+                            <p class="text-xs text-slate-500">無法預覽，<a href="SRDA.pdf" class="text-blue-600 underline">點此查看 SRDA.pdf</a></p>
+                        </object>
+                    </div>
+                    <p class="text-sm text-slate-600">同住者總人數較多，兩組皆以「經常」參加家庭聚會者最多（同住 64 人、獨居 8 人）。</p>
+                </div>
+                <!-- 圖 2 -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+                    <h3 class="font-bold text-slate-900">圖 2｜家庭聚會頻率圓餅圖</h3>
+                    <div class="bg-slate-100 rounded-lg p-2 flex items-center justify-center border h-72 overflow-hidden">
+                        <object data="SRDA2.pdf" type="application/pdf" class="w-full h-full">
+                            <p class="text-xs text-slate-500">無法預覽，<a href="SRDA2.pdf" class="text-blue-600 underline">點此查看 SRDA2.pdf</a></p>
+                        </object>
+                    </div>
+                    <p class="text-sm text-slate-600">全樣本中，經常參加占 54.5%（72人）、偶爾占 37.1%（49人）、從未占 8.3%（11人）。</p>
+                </div>
+                <!-- 圖 3 -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+                    <h3 class="font-bold text-slate-900">圖 3｜居住狀態與家庭聚會頻率折線圖</h3>
+                    <div class="bg-slate-100 rounded-lg p-2 flex items-center justify-center border h-72 overflow-hidden">
+                        <object data="SRDA3.pdf" type="application/pdf" class="w-full h-full">
+                            <p class="text-xs text-slate-500">無法預覽，<a href="SRDA3.pdf" class="text-blue-600 underline">點此查看 SRDA3.pdf</a></p>
+                        </object>
+                    </div>
+                    <p class="text-sm text-slate-600">兩組百分比變化趨勢相近，皆以「經常」參與比例最高，整體結構差異不大。</p>
+                </div>
+                <!-- 圖 4 -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+                    <h3 class="font-bold text-slate-900">圖 4｜居住狀態與家庭聚會頻率比例圖</h3>
+                    <div class="bg-slate-100 rounded-lg p-2 flex items-center justify-center border h-72 overflow-hidden">
+                        <object data="SRDA4.pdf" type="application/pdf" class="w-full h-full">
+                            <p class="text-xs text-slate-500">無法預覽，<a href="SRDA4.pdf" class="text-blue-600 underline">點此查看 SRDA4.pdf</a></p>
+                        </object>
+                    </div>
+                    <p class="text-sm text-slate-600">以內部百分比呈現，排除樣本數差異後，結構相當一致。</p>
+                </div>
+            </div>
+
+            <!-- 卡方檢定結果與結論 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4 text-slate-700">
+                <h3 class="text-lg font-bold text-slate-900">三、SRDA 卡方檢定結果與最終結論</h3>
+                <p>進行 Pearson 卡方獨立性檢定結果為：<strong>χ² = 1.4633，df = 2，p = 0.4811</strong>。由於 p 值大於 0.05，不拒絕虛無假設。</p>
+                <p>因「獨居 × 從未」的期望次數僅約 1.17（低於 5），為求穩健採 10,000 次 Monte Carlo 模擬，所得 <strong>p = 0.5463</strong>，仍未達顯著水準。</p>
+                <div class="bg-blue-50 border-l-4 border-blue-600 p-4 rounded text-blue-900 font-medium">
+                    💡 <strong>結論：</strong>本研究無足夠統計證據認為居住狀態與家庭聚會頻率之間存在顯著關聯。
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. SRDA 113 家庭收支 (Colab Analysis & Multi-Charts Area) -->
+        <section id="income" class="tab-content space-y-8">
+            <div class="border-b border-slate-200 pb-4 flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">四、SRDA 113 家庭收支調查分析成果（Colab 實作專區）</h2>
+                    <p class="text-sm text-slate-600 mt-1">展示 Google Colab 雲端筆記本中關於家庭收支、設備普及率、支出結構與戶長年齡之完整圖表與分析。</p>
+                </div>
+                <button onclick="switchTab('home')" class="text-sm text-blue-600 hover:underline"><i class="fa-solid fa-arrow-left"></i> 回首頁</button>
+            </div>
+
+            <!-- 核心分析文字說明總結 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6 text-slate-700 leading-relaxed">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">113 年度家庭收支與人口結構探索性分析摘要</h3>
+                    <p>本專區完整呈現您在 Colab 中針對 113 年度家庭收支調查所作的多維度統計。內容涵蓋現代家庭通訊設備普及率、經常性收入與消費支出之迴歸關係、八大消費支出結構比重、不同教育程度之戶長年齡分佈（箱形圖）以及各縣市戶長平均年齡（條形圖）。</p>
+                </div>
+            </div>
+
+            <!-- Colab 圖表展示區 (對應 png) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- 圖 1：電腦與手機普及率 -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+                    <h3 class="font-bold text-slate-900 flex items-center space-x-2">
+                        <span class="w-2 h-2 bg-purple-600 rounded-full"></span>
+                        <span>圖 1｜家庭電腦與手機普及率 (f38, f52)</span>
+                    </h3>
+                    <div class="bg-slate-100 rounded-lg p-4 flex items-center justify-center border border-slate-200 min-h-[240px]">
+                        <img src="colab_plot1.png" alt="電腦與手機普及率" class="max-h-80 object-contain rounded">
+                    </div>
+                    <p class="text-sm text-slate-600">統計顯示家庭電腦普及率約達 66.3%，而手機普及率則高達 97.5%，反映出行動通訊裝置在國內家庭中的高度普及。</p>
+                </div>
+
+                <!-- 圖 2：經常性收入與消費支出迴歸 & 八大消費支出結構 -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+                    <h3 class="font-bold text-slate-900 flex items-center space-x-2">
+                        <span class="w-2 h-2 bg-purple-600 rounded-full"></span>
+                        <span>圖 2｜收入與消費迴歸散佈圖 & 八大支出結構</span>
+                    </h3>
+                    <div class="bg-slate-100 rounded-lg p-4 flex items-center justify-center border border-slate-200 min-h-[240px]">
+                        <img src="colab_plot2.png" alt="收入消費迴歸與支出結構" class="max-h-80 object-contain rounded">
+                    </div>
+                    <p class="text-sm text-slate-600">左圖呈現經常性收入與總消費支出之正相關迴歸趨勢；右圖圓餅圖顯示居住房租及水電（28.5%）與食品飲料（25.1%）占家庭支出之最大宗。</p>
+                </div>
+
+                <!-- 圖 3：不同教育程度之戶長年齡分布 & 各縣市戶長平均年齡 -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4 md:col-span-2">
+                    <h3 class="font-bold text-slate-900 flex items-center space-x-2">
+                        <span class="w-2 h-2 bg-purple-600 rounded-full"></span>
+                        <span>圖 3｜教育程度與戶長年齡分布（箱形圖）及各縣市平均年齡（條形圖）</span>
+                    </h3>
+                    <div class="bg-slate-100 rounded-lg p-4 flex items-center justify-center border border-slate-200 min-h-[280px]">
+                        <img src="colab_plot3.png" alt="戶長年齡與教育程度及各縣市分佈" class="max-h-96 object-contain rounded">
+                    </div>
+                    <p class="text-sm text-slate-600">箱形圖比較了不同教育程度戶長的年齡中位數與離散情形；右側條形圖則展示了各縣市戶長平均年齡的地域差異排名。</p>
+                </div>
+
+            </div>
+
+            <!-- Colab 原始筆記本捷徑 -->
+            <div class="bg-purple-50 rounded-xl border border-purple-100 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                    <h4 class="font-bold text-purple-900">需要線上檢視完整的雲端 Colab 程式碼嗎？</h4>
+                    <p class="text-xs text-purple-700 mt-1">您可以隨時點擊右側按鈕開啟 Google Colab 雲端筆記本進行程式碼與模型對照。</p>
+                </div>
+                <a href="https://colab.research.google.com/drive/1w_S9M_UAq9CRVuA6myQUe8rkm61CDSPK?hl=zh-tw#scrollTo=943fd342" target="_blank" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-5 py-2.5 rounded-lg shadow transition flex items-center space-x-2 text-sm whitespace-nowrap">
+                    <i class="fa-solid fa-code"></i>
+                    <span>開啟 Google Colab 筆記本</span>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 頁尾 -->
+    <footer class="bg-white border-t border-slate-200 mt-auto py-6">
+        <div class="max-w-7xl mx-auto px-4 text-center text-sm text-slate-500 space-y-2">
+            <p>產業分析與統計實作成果儀表板 &copy; 2026</p>
+            <div class="flex justify-center space-x-4">
+                <a href="產業分析實作_完整R程式.R" download class="text-blue-600 hover:underline">下載 R 程式碼</a>
+                <span>&bull;</span>
+                <a href="https://colab.research.google.com/drive/1w_S9M_UAq9CRVuA6myQUe8rkm61CDSPK?hl=zh-tw#scrollTo=943fd342" target="_blank" class="text-purple-600 hover:underline">Google Colab 筆記本</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 分頁切換與手機選單互動腳本 -->
+    <script>
+        function switchTab(tabId) {
+            // 隱藏所有分頁
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(el => el.classList.remove('active'));
+
+            // 顯示目標分頁
+            const target = document.getElementById(tabId);
+            if (target) {
+                target.classList.add('active');
+            }
+
+            // 滾動至頂部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 手機版選單切換
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
